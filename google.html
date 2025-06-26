@@ -1,0 +1,51 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deal 2 – VAST AdServer Heineken</title>
+
+    <link
+      href="https://unpkg.com/video.js/dist/video-js.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/@filmgardi/videojs-vast@1.1.7/dist/videojs.vast.js"></script>
+  </head>
+  <body>
+    <h2 style="text-align: center">Deal 2 – Heineken (DFP)</h2>
+
+    <video
+      id="player"
+      class="video-js vjs-default-skin"
+      width="640"
+      height="360"
+      controls
+    ></video>
+
+    <script>
+      /* 1 — prepara URL reemplazando macros obligatorias  */
+      const vastRaw =
+        "https://ad.doubleclick.net/ddm/pfadx/N1420667.3561825THANKSTOYOU/B32907064.423452210;sz=0x0;dsp_xappb_0_=[ctv_appid];ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;dc_tdv=1;dcmt=text/xml;dc_sdk_apis=[APIFRAMEWORKS];dc_omid_p=[OMIDPARTNER];gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};dc_mpos=[BREAKPOSITION];ltd=";
+
+      const vastUrl = vastRaw
+        .replace("[timestamp]", Date.now()) // siempre único
+        .replace("[BREAKPOSITION]", "preroll") // o midroll, postroll…
+        .replace("[APIFRAMEWORKS]", "5") // js + MRAID
+        .replace("[OMIDPARTNER]", "omid1") // prueba
+        .replace("[ctv_appid]", "webdemo"); // opcional
+
+      /* 2 — instancia player */
+      const player = videojs("player");
+      player.vastClient({
+        adTagUrl: vastUrl,
+        playAdAlways: true,
+        adsEnabled: true,
+      });
+
+      player.on("adstart", () => console.log("Impresión Deal 2"));
+      player.on("adclick", () => console.log("Click Deal 2"));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Deal 1 – ThanksToYou</title>
+
+    <!-- 1. Núcleo Video.js -->
+    <link
+      href="https://unpkg.com/video.js@8/dist/video-js.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
+
+    <!-- 2. Librería base de anuncios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/7.5.2/videojs.ads.min.js"></script>
+    <!-- importante -->
+
+    <!-- 3. Plugin VAST -->
+    <script src="https://cdn.jsdelivr.net/npm/@filmgardi/videojs-vast@1.1.7/dist/videojs-vast.min.js"></script>
+  </head>
+
+  <body>
+    <video
+      id="player"
+      class="video-js vjs-default-skin"
+      controls
+      width="640"
+      height="360"
+    ></video>
+
+    <script>
+      /* Instancia el reproductor */
+      const player = videojs("player");
+
+      /* Activa el plugin (¡OJO!: se llama vast()) */
+      player.vast({
+        url: "https://srv-vast.thankstoyou.co/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty.vast.xml",
+        playAdAlways: true, // preroll constante
+      });
+
+      /* Eventos opcionales para tu analítica */
+      player.on("adstart", () => console.log("Impresión Deal 1"));
+      player.on("adclick", () => console.log("Click Deal 1"));
+    </script>
+  </body>
+</html>
