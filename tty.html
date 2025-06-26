@@ -4,45 +4,68 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Deal 1 – ThanksToYou</title>
+    <title>ThanksToYou</title>
 
-    <!-- 1. Núcleo Video.js -->
-    <link
-      href="https://unpkg.com/video.js@8/dist/video-js.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/video.js@8/dist/video.min.js"></script>
-
-    <!-- 2. Librería base de anuncios -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/7.5.2/videojs.ads.min.js"></script>
-    <!-- importante -->
-
-    <!-- 3. Plugin VAST -->
-    <script src="https://cdn.jsdelivr.net/npm/@filmgardi/videojs-vast@1.1.7/dist/videojs-vast.min.js"></script>
+    <!-- Google IMA SDK -->
+    <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <style>
+      #adContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 640px;
+        height: 360px;
+      }
+      video {
+        width: 640px;
+        height: 360px;
+        background: #fff;
+      }
+    </style>
   </head>
-
   <body>
-    <video
-      id="player"
-      class="video-js vjs-default-skin"
-      controls
-      width="640"
-      height="360"
-    ></video>
+    <!-- Vídeo “fantasma”: 0,2 s negro en data-URI y preload desactivado -->
+    <video id="content" preload="none" playsinline controls muted>
+      <source
+        src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb20yYXZj..."
+        type="video/mp4"
+      />
+    </video>
+    <div id="adContainer"></div>
 
     <script>
-      /* Instancia el reproductor */
-      const player = videojs("player");
+      const vast1 =
+        "https://srv-vast.thankstoyou.co/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty.vast.xml";
 
-      /* Activa el plugin (¡OJO!: se llama vast()) */
-      player.vast({
-        url: "https://srv-vast.thankstoyou.co/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty.vast.xml",
-        playAdAlways: true, // preroll constante
+      /* 1· Prepara contenedor y player */
+      const video = document.getElementById("content");
+      const adsDiv = document.getElementById("adContainer");
+      const adc = new google.ima.AdDisplayContainer(adsDiv, video);
+      adc.initialize(); // gesture: el click del usuario
+
+      /* 2· Pide el VAST */
+      const loader = new google.ima.AdsLoader(adc);
+      loader.addEventListener(
+        google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+        (evt) => {
+          const adsManager = evt.getAdsManager(video);
+          adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
+          adsManager.start(); // reproduce el preroll
+        }
+      );
+      const req = new google.ima.AdsRequest();
+      req.adTagUrl = vast1;
+      loader.requestAds(req);
+
+      /* 3· Arranca cuando el usuario pulse Play */
+      video.addEventListener("play", () => {
+        // (el SDK ya está listo gracias a adc.initialize)
       });
 
-      /* Eventos opcionales para tu analítica */
-      player.on("adstart", () => console.log("Impresión Deal 1"));
-      player.on("adclick", () => console.log("Click Deal 1"));
+      /* 4· Eventos para tu analítica */
+      loader.addEventListener("aderror", (e) =>
+        console.warn("⚠️ VAST error", e.getError().getErrorCode())
+      );
     </script>
   </body>
 </html>

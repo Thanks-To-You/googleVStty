@@ -4,48 +4,106 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>Deal 2 – VAST AdServer Heineken</title>
+    <title>(Google AdManager)</title>
 
-    <link
-      href="https://unpkg.com/video.js/dist/video-js.css"
-      rel="stylesheet"
-    />
-    <script src="https://unpkg.com/video.js/dist/video.js"></script>
-    <script src="https://unpkg.com/@filmgardi/videojs-vast@1.1.7/dist/videojs.vast.js"></script>
+    <!-- SDK oficial IMA -->
+    <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 2rem;
+      }
+      #playerWrap {
+        position: relative;
+        width: 640px;
+        height: 360px;
+      }
+      #adContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
+      video {
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
+    </style>
   </head>
   <body>
-    <h2 style="text-align: center">Deal 2 – Heineken (DFP)</h2>
+    <h2>Google</h2>
 
-    <video
-      id="player"
-      class="video-js vjs-default-skin"
-      width="640"
-      height="360"
-      controls
-    ></video>
+    <div id="playerWrap">
+      <!-- Vídeo “fantasma” de 0,2 s: ~5 KB embebidos, sin peticiones externas -->
+      <video id="content" preload="none" playsinline controls muted>
+        <source
+          src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb20yYXZjAAAAHG1vb3YAAABsbXZoZAAAAAB8Jhl8JhlUWF2YzEAAAAIZGF0YQAAAAEAAAAALAAAAAABAAEAAAEAAAAAAAAAAAAAAAEP4AAAP+AAAAC3N0dHMAAAAAbnN0c2MAAAAAAAAAAAEAAAABAAAAAQAAAAAAAAAAAAAAEQAAABxhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAhNvZHRhAAAAAQAAAAEAAAABAAAAAQAAAP//AAAAAA=="
+          type="video/mp4"
+        />
+      </video>
+      <div id="adContainer"></div>
+    </div>
 
     <script>
-      /* 1 — prepara URL reemplazando macros obligatorias  */
-      const vastRaw =
-        "https://ad.doubleclick.net/ddm/pfadx/N1420667.3561825THANKSTOYOU/B32907064.423452210;sz=0x0;dsp_xappb_0_=[ctv_appid];ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;dc_tdv=1;dcmt=text/xml;dc_sdk_apis=[APIFRAMEWORKS];dc_omid_p=[OMIDPARTNER];gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};dc_mpos=[BREAKPOSITION];ltd=";
+      /* ---------- 1. Construir la URL del VAST reemplazando macros ---------- */
+      const rawUrl =
+        "https://ad.doubleclick.net/ddm/pfadx/N1420667.3561825THANKSTOYOU/" +
+        "B32907064.423452210;sz=0x0;dsp_xappb_0_=[ctv_appid];ord=[timestamp];" +
+        "dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;dc_tdv=1;" +
+        "dcmt=text/xml;dc_sdk_apis=[APIFRAMEWORKS];dc_omid_p=[OMIDPARTNER];" +
+        "gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};dc_mpos=[BREAKPOSITION];ltd=";
 
-      const vastUrl = vastRaw
-        .replace("[timestamp]", Date.now()) // siempre único
-        .replace("[BREAKPOSITION]", "preroll") // o midroll, postroll…
-        .replace("[APIFRAMEWORKS]", "5") // js + MRAID
-        .replace("[OMIDPARTNER]", "omid1") // prueba
+      const vastUrl = rawUrl
+        .replace("[timestamp]", Date.now()) // macro obligatorio
+        .replace("[BREAKPOSITION]", "preroll") // o midroll/postroll
+        .replace("[APIFRAMEWORKS]", "5") // JS + OMID
+        .replace("[OMIDPARTNER]", "omid1") // identificador de partner
         .replace("[ctv_appid]", "webdemo"); // opcional
 
-      /* 2 — instancia player */
-      const player = videojs("player");
-      player.vastClient({
-        adTagUrl: vastUrl,
-        playAdAlways: true,
-        adsEnabled: true,
-      });
+      /* ---------- 2. Preparar contenedor de anuncios y player “content” ----- */
+      const video = document.getElementById("content");
+      const adDiv = document.getElementById("adContainer");
+      const adc = new google.ima.AdDisplayContainer(adDiv, video);
 
-      player.on("adstart", () => console.log("Impresión Deal 2"));
-      player.on("adclick", () => console.log("Click Deal 2"));
+      /* Debe inicializarse tras un gesto del usuario; el clic en Play sirve */
+      let adsInitialized = false;
+      function initAds() {
+        if (!adsInitialized) {
+          adc.initialize();
+          adsInitialized = true;
+
+          // Cargar el VAST
+          const loader = new google.ima.AdsLoader(adc);
+          loader.addEventListener(
+            google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+            (evt) => {
+              const adsManager = evt.getAdsManager(video);
+              adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
+              adsManager.start(); // reproduce el preroll
+            }
+          );
+          loader.addEventListener("aderror", (e) =>
+            console.warn("⚠️ VAST error", e.getError().getErrorCode())
+          );
+
+          const req = new google.ima.AdsRequest();
+          req.adTagUrl = vastUrl;
+          loader.requestAds(req);
+        }
+      }
+
+      /* ---------- 3. Lanzar la inicialización al pulsar Play ---------------- */
+      video.addEventListener("play", initAds, { once: true });
+
+      /* ---------- 4. Opcional: logs rápidos para medir ---------------------- */
+      adDiv.addEventListener("click", () => console.log("👉 Click Deal 2"));
+      video.addEventListener("ended", () => console.log("🎬 Fin contenido"));
     </script>
   </body>
 </html>
