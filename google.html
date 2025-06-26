@@ -4,106 +4,68 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>(Google AdManager)</title>
+    <title>ThanksToYou</title>
 
-    <!-- SDK oficial IMA -->
+    <!-- Google IMA SDK -->
     <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-
     <style>
-      body {
-        font-family: system-ui, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin: 2rem;
-      }
-      #playerWrap {
-        position: relative;
-        width: 640px;
-        height: 360px;
-      }
       #adContainer {
         position: absolute;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
+        width: 640px;
+        height: 360px;
       }
       video {
-        width: 100%;
-        height: 100%;
-        background: #000;
+        width: 640px;
+        height: 360px;
+        background: #fff;
       }
     </style>
   </head>
   <body>
-    <h2>Google</h2>
-
-    <div id="playerWrap">
-      <!-- Vídeo “fantasma” de 0,2 s: ~5 KB embebidos, sin peticiones externas -->
-      <video id="content" preload="none" playsinline controls muted>
-        <source
-          src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb20yYXZjAAAAHG1vb3YAAABsbXZoZAAAAAB8Jhl8JhlUWF2YzEAAAAIZGF0YQAAAAEAAAAALAAAAAABAAEAAAEAAAAAAAAAAAAAAAEP4AAAP+AAAAC3N0dHMAAAAAbnN0c2MAAAAAAAAAAAEAAAABAAAAAQAAAAAAAAAAAAAAEQAAABxhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAhNvZHRhAAAAAQAAAAEAAAABAAAAAQAAAP//AAAAAA=="
-          type="video/mp4"
-        />
-      </video>
-      <div id="adContainer"></div>
-    </div>
+    <!-- Vídeo “fantasma”: 0,2 s negro en data-URI y preload desactivado -->
+    <video id="content" preload="none" playsinline controls muted>
+      <source
+        src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb20yYXZj..."
+        type="video/mp4"
+      />
+    </video>
+    <div id="adContainer"></div>
 
     <script>
-      /* ---------- 1. Construir la URL del VAST reemplazando macros ---------- */
-      const rawUrl =
-        "https://ad.doubleclick.net/ddm/pfadx/N1420667.3561825THANKSTOYOU/" +
-        "B32907064.423452210;sz=0x0;dsp_xappb_0_=[ctv_appid];ord=[timestamp];" +
-        "dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;dc_tdv=1;" +
-        "dcmt=text/xml;dc_sdk_apis=[APIFRAMEWORKS];dc_omid_p=[OMIDPARTNER];" +
-        "gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};dc_mpos=[BREAKPOSITION];ltd=";
+      const vast1 =
+        "https://ad.doubleclick.net/ddm/pfadx/N1420667.3561825THANKSTOYOU/B32907064.423452210;sz=0x0;dsp_xappb_0_=[ctv_appid];ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;dc_tdv=1;dcmt=text/xml;dc_sdk_apis=[APIFRAMEWORKS];dc_omid_p=[OMIDPARTNER];gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};dc_mpos=[BREAKPOSITION];ltd=";
 
-      const vastUrl = rawUrl
-        .replace("[timestamp]", Date.now()) // macro obligatorio
-        .replace("[BREAKPOSITION]", "preroll") // o midroll/postroll
-        .replace("[APIFRAMEWORKS]", "5") // JS + OMID
-        .replace("[OMIDPARTNER]", "omid1") // identificador de partner
-        .replace("[ctv_appid]", "webdemo"); // opcional
-
-      /* ---------- 2. Preparar contenedor de anuncios y player “content” ----- */
+      /* 1· Prepara contenedor y player */
       const video = document.getElementById("content");
-      const adDiv = document.getElementById("adContainer");
-      const adc = new google.ima.AdDisplayContainer(adDiv, video);
+      const adsDiv = document.getElementById("adContainer");
+      const adc = new google.ima.AdDisplayContainer(adsDiv, video);
+      adc.initialize(); // gesture: el click del usuario
 
-      /* Debe inicializarse tras un gesto del usuario; el clic en Play sirve */
-      let adsInitialized = false;
-      function initAds() {
-        if (!adsInitialized) {
-          adc.initialize();
-          adsInitialized = true;
-
-          // Cargar el VAST
-          const loader = new google.ima.AdsLoader(adc);
-          loader.addEventListener(
-            google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-            (evt) => {
-              const adsManager = evt.getAdsManager(video);
-              adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
-              adsManager.start(); // reproduce el preroll
-            }
-          );
-          loader.addEventListener("aderror", (e) =>
-            console.warn("⚠️ VAST error", e.getError().getErrorCode())
-          );
-
-          const req = new google.ima.AdsRequest();
-          req.adTagUrl = vastUrl;
-          loader.requestAds(req);
+      /* 2· Pide el VAST */
+      const loader = new google.ima.AdsLoader(adc);
+      loader.addEventListener(
+        google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+        (evt) => {
+          const adsManager = evt.getAdsManager(video);
+          adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
+          adsManager.start(); // reproduce el preroll
         }
-      }
+      );
+      const req = new google.ima.AdsRequest();
+      req.adTagUrl = vast1;
+      loader.requestAds(req);
 
-      /* ---------- 3. Lanzar la inicialización al pulsar Play ---------------- */
-      video.addEventListener("play", initAds, { once: true });
+      /* 3· Arranca cuando el usuario pulse Play */
+      video.addEventListener("play", () => {
+        // (el SDK ya está listo gracias a adc.initialize)
+      });
 
-      /* ---------- 4. Opcional: logs rápidos para medir ---------------------- */
-      adDiv.addEventListener("click", () => console.log("👉 Click Deal 2"));
-      video.addEventListener("ended", () => console.log("🎬 Fin contenido"));
+      /* 4· Eventos para tu analítica */
+      loader.addEventListener("aderror", (e) =>
+        console.warn("⚠️ VAST error", e.getError().getErrorCode())
+      );
     </script>
   </body>
 </html>
