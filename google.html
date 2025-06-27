@@ -49,7 +49,7 @@
         google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
         (evt) => {
           const adsManager = evt.getAdsManager(video);
-          adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
+          adsManager.init(1920, 1080, google.ima.ViewMode.NORMAL);
           adsManager.start(); // reproduce el preroll
         }
       );
