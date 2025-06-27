@@ -35,7 +35,7 @@
 
     <script>
       const vast1 =
-        "https://ad.doubleclick.net/ddm/pfadx/N1420667.3561825THANKSTOYOU/B32907064.423452210;sz=0x0;dsp_xappb_0_=[ctv_appid];ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;dc_tdv=1;dcmt=text/xml;dc_sdk_apis=[APIFRAMEWORKS];dc_omid_p=[OMIDPARTNER];gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};dc_mpos=[BREAKPOSITION];ltd=";
+        "https://srv-vast.thankstoyou.co/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty.vast.xml";
 
       /* 1· Prepara contenedor y player */
       const video = document.getElementById("content");
@@ -49,7 +49,7 @@
         google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
         (evt) => {
           const adsManager = evt.getAdsManager(video);
-          adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
+          adsManager.init(1280, 720, google.ima.ViewMode.NORMAL);
           adsManager.start(); // reproduce el preroll
         }
       );
