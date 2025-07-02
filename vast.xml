@@ -1,0 +1,78 @@
+<VAST version="2.0">
+<Ad id="104">
+<InLine>
+<AdSystem version="1.0">ThanksToYou</AdSystem>
+<AdTitle>xMX_CARBOON_FOOTPRINT_TEST_DEAL_1_HEINEKEN _JUN_2025_GREEN_PMP_VID_VAST _AD_SERVER_TTY</AdTitle>
+<Description>MX_CARBOON_FOOTPRINT_TEST_DEAL_1_HEINEKEN _JUN_2025_GREEN_PMP_VID_VAST _AD_SERVER_TTY</Description>
+<Impression id="ClientPixel">
+<![CDATA[ https://ad.doubleclick.net/ddm/trackimpj/N1420667.3561825THANKSTOYOU/B32907064.424033590;dc_trk_aid=616213235;dc_trk_cid=236961638;ord=[timestamp];dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ltd=;dc_tdv=1? ]]>
+</Impression>
+<Impression id="Verifier">
+<![CDATA[ https://pixel.adsafeprotected.com/rfw/st/2331187/88150201/skeleton.gif?gdpr=${GDPR}&gdpr_consent=${GDPR_CONSENT_278}&gdpr_pd=${GDPR_PD ]]>
+</Impression>
+<Impression id="Impressions">
+<![CDATA[ https://pixel.green-tag.io/28386af7-3760-4348-8b6a-eabea43c470a ]]>
+</Impression>
+<Creatives>
+<Creative>
+<Linear>
+<Duration>00:00:15.000</Duration>
+<MediaFiles>
+<MediaFile delivery="streaming" type="application/x-mpegurl" width="1920" height="1080" scalable="true" maintainAspectRatio="true">
+<![CDATA[ https://creatives.green-tag.io/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty/output-mini/video.m3u8 ]]>
+</MediaFile>
+<MediaFile delivery="streaming" type="application/dash+xml" width="1920" height="1080" scalable="true" maintainAspectRatio="true">
+<![CDATA[ https://creatives.green-tag.io/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty/output-mini/video.mpd ]]>
+</MediaFile>
+<MediaFile delivery="progressive" type="video/mp4" bitrate="200" width="640" height="360" scalable="true" maintainAspectRatio="true">
+<![CDATA[ https://creatives.green-tag.io/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty/output-mini/video360-200000.mp4 ]]>
+</MediaFile>
+<MediaFile delivery="progressive" type="video/mp4" bitrate="500" width="720" height="1280" scalable="true" maintainAspectRatio="true">
+<![CDATA[ https://creatives.green-tag.io/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty/output-mini/video720-500000.mp4 ]]>
+</MediaFile>
+<MediaFile delivery="progressive" type="video/mp4" bitrate="1000" width="1920" height="1080" scalable="true" maintainAspectRatio="true">
+<![CDATA[ https://creatives.green-tag.io/e9a62913-1309-4d0b-bf07-f6afb8e79638/69fdf8d306dc3b215bfab-mxcarboonfootprinttestdeal1heinekenjun2025greenpmpvidvastadservertty/output-mini/video1080-1000000.mp4 ]]>
+</MediaFile>
+</MediaFiles>
+<TrackingEvents>
+<Tracking event="start">
+<![CDATA[ https://pixel.green-tag.io/19916d8b-3651-46ce-96ae-7ffafc4bd1e2 ]]>
+</Tracking>
+<Tracking event="firstQuartile">
+<![CDATA[ https://pixel.green-tag.io/bf3d58eb-a052-4452-8a14-0480534e7f6f ]]>
+</Tracking>
+<Tracking event="midpoint">
+<![CDATA[ https://pixel.green-tag.io/4cac2e1f-9d7d-4300-baa4-ebb815dba2b9 ]]>
+</Tracking>
+<Tracking event="thirdQuartile">
+<![CDATA[ https://pixel.green-tag.io/4a8baa3a-070b-4fa7-a276-cf0393ea36b6 ]]>
+</Tracking>
+<Tracking event="complete">
+<![CDATA[ https://pixel.green-tag.io/863349f9-f8c4-43d4-895c-cc163df91aad ]]>
+</Tracking>
+</TrackingEvents>
+<VideoClicks>
+<ClickThrough id="clickThroughId">
+<![CDATA[ https://ad.doubleclick.net/ddm/trackclk/N1420667.3561825THANKSTOYOU/B32907064.424033590;dc_trk_aid=616213235;dc_trk_cid=236961638;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=;tfua=;gdpr=${GDPR};gdpr_consent=${GDPR_CONSENT_755};ltd=;dc_tdv=1 ]]>
+</ClickThrough>
+<ClickTracking>
+<![CDATA[ https://pixel.green-tag.io/85c13d33-c2c9-4896-9c8e-610f0b1584f3 ]]>
+</ClickTracking>
+</VideoClicks>
+</Linear>
+</Creative>
+</Creatives>
+<Extensions>
+<Extension type="AdVerifications">
+<AdVerifications>
+<Verification vendor="integralads.com-omid">
+<JavaScriptResource apiFramework="omid" browserOptional="true">
+<![CDATA[ https://pixel.adsafeprotected.com/rjss/st/2331187/88150202/skeleton.js ]]>
+</JavaScriptResource>
+</Verification>
+</AdVerifications>
+</Extension>
+</Extensions>
+</InLine>
+</Ad>
+</VAST>

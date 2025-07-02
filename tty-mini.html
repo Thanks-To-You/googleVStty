@@ -1,0 +1,71 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>ThanksToYou mini</title>
+
+    <!-- Google IMA SDK -->
+    <script src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <style>
+      #adContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 640px;
+        height: 360px;
+      }
+      video {
+        width: 640px;
+        height: 360px;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Vídeo “fantasma”: 0,2 s negro en data-URI y preload desactivado -->
+    <video id="content" preload="none" playsinline controls muted>
+      <source
+        src="data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb20yYXZj..."
+        type="video/mp4"
+      />
+    </video>
+    <div id="adContainer"></div>
+
+    <script>
+      const vast1 =
+        "https://srv-vast.thankstoyou.co/e9a62913-1309-4d0b-bf07-f6afb8e79638/vast.xml";
+
+      /* 1· Prepara contenedor y player */
+      const video = document.getElementById("content");
+      const adsDiv = document.getElementById("adContainer");
+      const adc = new google.ima.AdDisplayContainer(adsDiv, video);
+      adc.initialize(); // gesture: el click del usuario
+
+      /* 2· Pide el VAST */
+      const loader = new google.ima.AdsLoader(adc);
+      loader.addEventListener(
+        google.ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
+        (evt) => {
+          const adsManager = evt.getAdsManager(video);
+          adsManager.init(640, 360, google.ima.ViewMode.NORMAL);
+          adsManager.start(); // reproduce el preroll
+        }
+      );
+      const req = new google.ima.AdsRequest();
+      req.adTagUrl = vast1;
+      loader.requestAds(req);
+
+      /* 3· Arranca cuando el usuario pulse Play */
+      video.addEventListener("play", () => {
+        // (el SDK ya está listo gracias a adc.initialize)
+      });
+
+      /* 4· Eventos para tu analítica */
+      loader.addEventListener("aderror", (e) =>
+        console.warn("⚠️ VAST error", e.getError().getErrorCode())
+      );
+    </script>
+  </body>
+</html>
